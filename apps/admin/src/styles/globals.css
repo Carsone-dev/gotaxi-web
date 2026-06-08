@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 11%;
+    --primary: 144 100% 29%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 60 6% 92%;
+    --muted-foreground: 240 4% 38%;
+    --border: 0 0% 90%;
+    --ring: 144 100% 29%;
+    --radius: 0.75rem;
+  }
+
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+  }
+
+  * {
+    @apply border-border;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+}

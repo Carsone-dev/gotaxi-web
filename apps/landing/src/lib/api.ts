@@ -25,3 +25,17 @@ export const colisApi = {
   publicTrack: (reference: string) =>
     get<import("@/types/domain").ColisRead>(`/public/colis/${reference.toUpperCase()}`),
 };
+
+export const chauffeurApi = {
+  submitDemande: (data: {
+    prenom: string;
+    nom: string;
+    telephone: string;
+    ville: string;
+    vehicule: string;
+    message?: string;
+  }) =>
+    apiClient
+      .post<{ message: string }>("/public/demandes-chauffeur", data)
+      .then((r) => r.data),
+};

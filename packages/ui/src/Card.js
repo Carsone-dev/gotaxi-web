@@ -1,0 +1,14 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import { cn } from "./utils";
+export function Card({ className, ...props }) {
+    return (_jsx("div", { className: cn("rounded-2xl border border-border bg-white shadow-soft", className), ...props }));
+}
+export function CardHeader({ className, ...props }) {
+    return _jsx("div", { className: cn("flex items-center justify-between border-b border-border px-5 py-4", className), ...props });
+}
+export function CardContent({ className, ...props }) {
+    return _jsx("div", { className: cn("px-5 py-4", className), ...props });
+}
+export function CardFooter({ className, ...props }) {
+    return _jsx("div", { className: cn("border-t border-border px-5 py-3", className), ...props });
+}

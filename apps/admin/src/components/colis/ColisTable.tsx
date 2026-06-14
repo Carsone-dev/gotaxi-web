@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Package } from "lucide-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/DataTable";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { formatDate, formatCurrency } from "@/lib/format";
+import { formatDate, formatCurrency, getMediaUrl } from "@/lib/format";
 import type { ColisRead, ColisStatut } from "@/types/domain";
 
 const statutConfig: Record<ColisStatut, { label: string; variant: "success" | "error" | "warning" | "info" | "neutral" }> = {
@@ -26,18 +27,44 @@ export function ColisTable({ colis, loading, onRowClick }: ColisTableProps) {
   const columns = useMemo<ColumnDef<ColisRead, unknown>[]>(
     () => [
       {
-        accessorKey: "code_suivi",
+        id: "ref",
         header: "Référence",
-        cell: ({ getValue }) => (
-          <span className="font-mono text-xs font-bold text-primary">{getValue() as string}</span>
-        ),
+        cell: ({ row }) => {
+          const c = row.original;
+          const photoUrl = getMediaUrl(c.photo_url);
+          return (
+            <div className="flex items-center gap-2.5">
+              {photoUrl ? (
+                <img
+                  src={photoUrl}
+                  alt=""
+                  className="size-10 rounded-xl object-cover shrink-0 border border-border"
+                />
+              ) : (
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface border border-border">
+                  <Package className="size-4 text-muted-foreground" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="font-mono text-xs font-bold text-primary">{c.code_suivi}</p>
+                <p className="text-xs text-muted-foreground truncate max-w-[160px]">{c.description}</p>
+              </div>
+            </div>
+          );
+        },
       },
       {
-        accessorKey: "description",
-        header: "Description",
-        cell: ({ getValue }) => (
-          <span className="text-sm max-w-[200px] truncate block">{getValue() as string}</span>
-        ),
+        id: "destinataire",
+        header: "Destinataire",
+        cell: ({ row }) => {
+          const c = row.original;
+          return (
+            <div>
+              <p className="text-sm font-medium">{c.destinataire_nom}</p>
+              <p className="text-xs text-muted-foreground">{c.destinataire_telephone}</p>
+            </div>
+          );
+        },
       },
       {
         id: "trajet",

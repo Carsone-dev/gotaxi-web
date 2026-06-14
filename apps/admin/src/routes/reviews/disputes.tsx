@@ -2,18 +2,35 @@ import { Link } from "react-router-dom";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { DisputeCard } from "@/components/reviews/DisputeCard";
 import { Button, Spinner } from "@gotaxi/ui";
-import { ArrowLeft } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { get } from "@/lib/api";
-import type { AvisRead } from "@/types/domain";
+import { ArrowLeft, CheckCircle } from "lucide-react";
+import { useAdminAvis, useMasquerAvis, useRestaureAvis } from "@/hooks/useAdmin";
+import { toast } from "sonner";
 
 export default function DisputesPage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["admin", "avis", "disputes"],
-    queryFn: () => get<AvisRead[]>("/admin/avis?signale=true"),
-  });
+  const { data, isLoading } = useAdminAvis({ signale: true, size: 100 });
 
-  const disputes = (data ?? []).filter((a) => a.signale);
+  const masquer = useMasquerAvis();
+  const restaurer = useRestaureAvis();
+
+  const disputes = data?.items ?? [];
+
+  async function handleMasquer(id: string) {
+    try {
+      await masquer.mutateAsync(id);
+      toast.success("Avis masqué");
+    } catch {
+      toast.error("Erreur");
+    }
+  }
+
+  async function handleRestaurer(id: string) {
+    try {
+      await restaurer.mutateAsync(id);
+      toast.success("Avis restauré");
+    } catch {
+      toast.error("Erreur");
+    }
+  }
 
   return (
     <>
@@ -32,9 +49,12 @@ export default function DisputesPage() {
       {isLoading ? (
         <Spinner className="mt-12" />
       ) : disputes.length === 0 ? (
-        <div className="mt-12 text-center">
+        <div className="mt-16 flex flex-col items-center gap-3 text-center">
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-success-bg">
+            <CheckCircle className="size-7 text-success" />
+          </div>
           <p className="text-lg font-bold">Aucun litige en cours</p>
-          <p className="text-sm text-muted-foreground mt-1">Tous les avis signalés ont été traités.</p>
+          <p className="text-sm text-muted-foreground">Tous les avis signalés ont été traités.</p>
         </div>
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -42,7 +62,9 @@ export default function DisputesPage() {
             <DisputeCard
               key={avis.id}
               avis={avis}
-              onArbitrate={(id) => console.log("Arbitrate:", id)}
+              onMasquer={handleMasquer}
+              onRestaurer={handleRestaurer}
+              isLoading={masquer.isPending || restaurer.isPending}
             />
           ))}
         </div>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/DataTable";
 import { UserStatusBadge } from "./UserStatusBadge";
-import { formatDate, formatPhoneNumber, getInitials } from "@/lib/format";
+import { formatDate, formatPhoneNumber, getInitials, getMediaUrl } from "@/lib/format";
 import type { UserRead } from "@/types/domain";
 
 const roleLabel: Record<string, string> = {
@@ -33,7 +33,7 @@ export function UsersTable({ users, loading, onRowClick }: UsersTableProps) {
             <div className="flex items-center gap-3">
               {u.photo_url ? (
                 <img
-                  src={u.photo_url}
+                  src={getMediaUrl(u.photo_url) ?? ""}
                   alt=""
                   className="size-8 rounded-full object-cover ring-2 ring-border"
                 />

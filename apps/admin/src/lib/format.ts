@@ -34,3 +34,11 @@ export function formatPhoneNumber(phone: string): string {
 export function getInitials(nom: string, prenom: string): string {
   return `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase();
 }
+
+const _backendOrigin = new URL(import.meta.env.VITE_API_URL as string).origin;
+
+export function getMediaUrl(path: string | null | undefined): string | null {
+  if (!path) return null;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return `${_backendOrigin}${path}`;
+}

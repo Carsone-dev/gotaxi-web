@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "sonner";
 import "./i18n";
 import { AppRouter } from "./routes";
@@ -18,9 +19,11 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <AppRouter />
-    <Toaster richColors position="top-right" />
-    <ReactQueryDevtools initialIsOpen={false} />
-  </QueryClientProvider>,
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppRouter />
+      <Toaster richColors position="top-right" />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  </HelmetProvider>,
 );

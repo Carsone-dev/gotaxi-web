@@ -1,0 +1,14 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { cn } from "@gotaxi/ui";
+const navLinks = [
+    { to: "/voyager", label: "Voyager" },
+    { to: "/colis", label: "Envoyer un colis" },
+    { to: "/chauffeur", label: "Devenir chauffeur" },
+];
+export function Header() {
+    const [menuOpen, setMenuOpen] = useState(false);
+    return (_jsxs("header", { className: "sticky top-0 z-50 border-b border-border bg-white/95 backdrop-blur-md", children: [_jsxs("div", { className: "container-page flex h-16 items-center justify-between", children: [_jsxs(Link, { to: "/", className: "flex items-center gap-2", children: [_jsx("div", { className: "flex size-8 items-center justify-center rounded-xl bg-primary font-extrabold text-white text-sm", children: "GT" }), _jsxs("span", { className: "text-lg font-extrabold", children: ["Go", _jsx("span", { className: "text-primary", children: "Taxi" })] })] }), _jsx("nav", { className: "hidden items-center gap-6 md:flex", children: navLinks.map((link) => (_jsx(NavLink, { to: link.to, className: ({ isActive }) => cn("text-sm font-medium transition-colors", isActive ? "text-primary" : "text-muted-foreground hover:text-ink"), children: link.label }, link.to))) }), _jsxs("div", { className: "hidden items-center gap-3 md:flex", children: [_jsx(Link, { to: "/track", className: "rounded-xl border border-border px-4 py-2 text-sm font-semibold text-ink hover:bg-surface transition-colors", children: "Suivre un colis" }), _jsx("a", { href: "#download", className: "rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary-600 transition-colors", children: "T\u00E9l\u00E9charger l'app" })] }), _jsx("button", { className: "rounded-lg p-2 hover:bg-surface md:hidden", onClick: () => setMenuOpen(!menuOpen), children: menuOpen ? _jsx(X, { className: "size-5" }) : _jsx(Menu, { className: "size-5" }) })] }), menuOpen && (_jsxs("div", { className: "border-t border-border bg-white px-4 pb-4 md:hidden", children: [_jsxs("nav", { className: "space-y-1 pt-2", children: [navLinks.map((link) => (_jsx(NavLink, { to: link.to, onClick: () => setMenuOpen(false), className: ({ isActive }) => cn("block rounded-xl px-4 py-3 text-sm font-medium transition-colors", isActive ? "bg-primary-50 text-primary" : "text-ink hover:bg-surface"), children: link.label }, link.to))), _jsx(Link, { to: "/track", onClick: () => setMenuOpen(false), className: "block rounded-xl px-4 py-3 text-sm font-medium text-ink hover:bg-surface", children: "Suivre un colis" })] }), _jsx("a", { href: "#download", onClick: () => setMenuOpen(false), className: "mt-3 block w-full rounded-xl bg-primary px-4 py-3 text-center text-sm font-bold text-white", children: "T\u00E9l\u00E9charger l'application" })] }))] }));
+}

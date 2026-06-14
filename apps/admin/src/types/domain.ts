@@ -1,6 +1,16 @@
 // ─── Enums ─────────────────────────────────────────────────────────────────
 
 export type UserRole = "CLIENT" | "CHAUFFEUR" | "ADMIN" | "SUPER_ADMIN";
+
+export type PayoutOperateur = "FEDAPAY" | "MTN_MOMO" | "MOOV_MONEY" | "ORANGE_MONEY" | "CELTIS" | "WALLET";
+
+export interface ComptePayoutRead {
+  id: string;
+  chauffeur_id: string;
+  operateur: PayoutOperateur;
+  telephone: string;
+  actif: boolean;
+}
 export type UserStatut = "ACTIF" | "SUSPENDU" | "EN_ATTENTE_KYC" | "SUPPRIME";
 
 export type VoyageStatut = "PUBLIE" | "COMPLET" | "EN_COURS" | "TERMINE" | "ANNULE";
@@ -26,9 +36,26 @@ export type ColisModalitePaiement = "A_LA_CONFIRMATION" | "A_LA_LIVRAISON";
 
 export type TypeVehicule = "BERLINE" | "SUV" | "MINIBUS" | "BUS" | "MOTO";
 
-export type TransactionType = "RECHARGE" | "REVERSEMENT" | "PAIEMENT" | "REMBOURSEMENT";
-export type TransactionStatut = "EN_ATTENTE" | "REUSSI" | "ECHOUE" | "ANNULE";
-export type TransactionOperateur = "MTN" | "MOOV" | "ORANGE" | "WALLET";
+export type TransactionType =
+  | "RECHARGE"
+  | "PAIEMENT_VOYAGE"
+  | "PAIEMENT_COLIS"
+  | "REVERSEMENT"
+  | "REMBOURSEMENT"
+  | "COMMISSION";
+export type TransactionStatut = "EN_ATTENTE" | "EN_COURS" | "REUSSI" | "ECHEC" | "ANNULE";
+export type TransactionOperateur = "MTN_MOMO" | "MOOV_MONEY" | "ORANGE_MONEY" | "WALLET";
+
+export interface TransactionStatutStat {
+  statut: TransactionStatut;
+  count: number;
+  volume: number;
+}
+
+export interface TransactionStats {
+  by_statut: TransactionStatutStat[];
+  volume_reussi: number;
+}
 
 // ─── Pagination ─────────────────────────────────────────────────────────────
 
@@ -59,6 +86,21 @@ export interface UserRead {
 }
 
 export type AdminUser = UserRead;
+
+export interface UserStatutStat {
+  statut: UserStatut;
+  count: number;
+}
+
+export interface UserRoleStat {
+  role: UserRole;
+  count: number;
+}
+
+export interface UserStats {
+  by_statut: UserStatutStat[];
+  by_role: UserRoleStat[];
+}
 
 export interface UserPublic {
   id: string;
@@ -127,6 +169,55 @@ export interface ChauffeurRead {
 export interface AdminChauffeurDetail {
   user: UserRead;
   chauffeur: ChauffeurRead;
+}
+
+export interface AdminChauffeurItem extends ChauffeurRead {
+  user: UserRead | null;
+}
+
+export interface ChauffeurStats {
+  total: number;
+  en_ligne: number;
+  kyc_valide: number;
+  kyc_attente: number;
+}
+
+export interface AdminVoyageDetail {
+  voyage: VoyageRead;
+  reservations: ReservationRead[];
+  chauffeur: UserRead | null;
+  vehicule: VehiculeRead | null;
+}
+
+export interface VoyageStatutStat {
+  statut: VoyageStatut;
+  count: number;
+}
+
+export interface VoyagesStats {
+  by_statut: VoyageStatutStat[];
+}
+
+export interface AdminReservationDetail {
+  reservation: ReservationRead;
+  client_full: UserRead | null;
+  voyage_full: VoyageRead | null;
+}
+
+export interface ReservationStatutStat {
+  statut: ReservationStatut;
+  count: number;
+  volume: number;
+}
+
+export interface ReservationsStats {
+  by_statut: ReservationStatutStat[];
+  volume_confirmees: number;
+}
+
+export interface AdminColisDetail {
+  colis: ColisRead;
+  expediteur: UserRead | null;
 }
 
 export interface ChauffeurStats {
@@ -290,13 +381,23 @@ export interface WalletRead {
   actif: boolean;
 }
 
+export interface TransactionUser {
+  id: string;
+  nom: string;
+  prenom: string;
+  telephone: string;
+  role: UserRole;
+}
+
 export interface TransactionRead {
   id: string;
   type: TransactionType;
   statut: TransactionStatut;
   operateur: TransactionOperateur;
   montant: number;
+  reference_externe: string | null;
   created_at: string;
+  user: TransactionUser | null;
 }
 
 export interface RechargeInitiateRequest {
@@ -322,13 +423,18 @@ export interface AvisRead {
   id: string;
   auteur_id: string;
   cible_id: string;
-  voyage_id: string;
+  voyage_id: string | null;
   note: number;
   commentaire: string | null;
   tags: string[];
   signale: boolean;
   visible: boolean;
   created_at: string;
+}
+
+export interface AdminAvisItem extends AvisRead {
+  auteur: UserRead | null;
+  cible: UserRead | null;
 }
 
 export interface AvisCreate {
@@ -405,6 +511,82 @@ export interface MoMoStat {
   volume: number;
   count: number;
   pct: number;
+}
+
+// ─── Tarifs ──────────────────────────────────────────────────────────────────
+
+export interface TarifTrajetRead {
+  id: string;
+  ville_depart_id: string;
+  ville_arrivee_id: string;
+  ville_depart: VilleRead;
+  ville_arrivee: VilleRead;
+  prix_recommande: number;
+  prix_max: number;
+  actif: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// ─── Localisation ────────────────────────────────────────────────────────────
+
+export interface VilleRead {
+  id: string;
+  nom: string;
+  actif: boolean;
+  created_at: string;
+}
+
+export interface GareRead {
+  id: string;
+  nom: string;
+  ville_id: string;
+  ville: VilleRead;
+  adresse: string | null;
+  lat: number | null;
+  lng: number | null;
+  actif: boolean;
+  created_at: string;
+}
+
+// ─── Demandes d'inscription chauffeur ────────────────────────────────────────
+
+export type DemandeChauffeurStatut = "NOUVELLE" | "EN_COURS" | "TRAITEE" | "REJETEE";
+
+export interface DemandeChauffeur {
+  id: string;
+  prenom: string;
+  nom: string;
+  telephone: string;
+  ville: string;
+  vehicule: string;
+  message: string | null;
+  statut: DemandeChauffeurStatut;
+  traite_le: string | null;
+  traite_par_id: string | null;
+  user_id: string | null;
+  motif_rejet: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DemandeChauffeurStats {
+  nouvelle: number;
+  en_cours: number;
+  traitee: number;
+  rejetee: number;
+  total: number;
+}
+
+export interface TraiterDemandeCredentials {
+  telephone: string;
+  password: string;
+  user_id: string;
+}
+
+export interface TraiterDemandeResponse {
+  message: string;
+  credentials: TraiterDemandeCredentials;
 }
 
 // ─── Fleet ───────────────────────────────────────────────────────────────────

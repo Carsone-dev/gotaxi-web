@@ -19,11 +19,16 @@ const ColisPending = lazy(() => import("./colis/pending"));
 const ColisInTransit = lazy(() => import("./colis/in-transit"));
 const ColisDetail = lazy(() => import("./colis/[id]"));
 const Reservations = lazy(() => import("./reservations/index"));
+const ReservationDetail = lazy(() => import("./reservations/[id]"));
 const Transactions = lazy(() => import("./transactions/index"));
 const Reviews = lazy(() => import("./reviews/index"));
 const Disputes = lazy(() => import("./reviews/disputes"));
 const Audit = lazy(() => import("./audit/index"));
 const Settings = lazy(() => import("./settings/index"));
+const Tarifs = lazy(() => import("./tarifs/index"));
+const Villes = lazy(() => import("./villes/index"));
+const Gares = lazy(() => import("./gares/index"));
+const Demandes = lazy(() => import("./demandes/index"));
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -49,6 +54,7 @@ const router = createBrowserRouter([
       { path: "colis/in-transit", element: <ColisInTransit /> },
       { path: "colis/:id", element: <ColisDetail /> },
       { path: "reservations", element: <Reservations /> },
+      { path: "reservations/:id", element: <ReservationDetail /> },
       { path: "transactions", element: <Transactions /> },
       { path: "reviews", element: <Reviews /> },
       { path: "reviews/disputes", element: <Disputes /> },
@@ -60,6 +66,10 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      { path: "tarifs", element: <Tarifs /> },
+      { path: "villes", element: <Villes /> },
+      { path: "gares", element: <Gares /> },
+      { path: "demandes", element: <Demandes /> },
       { path: "settings", element: <Settings /> },
     ],
   },

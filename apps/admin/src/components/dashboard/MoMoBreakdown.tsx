@@ -3,11 +3,18 @@ import { Card, CardHeader, CardContent, Skeleton } from "@gotaxi/ui";
 import { useMoMoStats } from "@/hooks/useAdmin";
 import type { TransactionOperateur } from "@/types/domain";
 
+const OPERATOR_LABELS: Record<TransactionOperateur, string> = {
+  MTN_MOMO:     "MTN MoMo",
+  MOOV_MONEY:   "Moov Money",
+  ORANGE_MONEY: "Orange Money",
+  WALLET:       "Wallet",
+};
+
 const OPERATOR_COLORS: Record<TransactionOperateur, string> = {
-  MTN: "#FFD700",
-  MOOV: "#00B7E2",
-  ORANGE: "#FF6600",
-  WALLET: "#009542",
+  MTN_MOMO:     "#FFD700",
+  MOOV_MONEY:   "#00B7E2",
+  ORANGE_MONEY: "#FF6600",
+  WALLET:       "#009542",
 };
 
 export function MoMoBreakdown() {
@@ -64,7 +71,7 @@ export function MoMoBreakdown() {
                       className="size-2.5 rounded-full"
                       style={{ backgroundColor: OPERATOR_COLORS[stat.operateur] }}
                     />
-                    <span className="text-xs font-semibold">{stat.operateur}</span>
+                    <span className="text-xs font-semibold">{OPERATOR_LABELS[stat.operateur] ?? stat.operateur}</span>
                   </div>
                   <div className="text-right">
                     <span className="text-xs font-bold">

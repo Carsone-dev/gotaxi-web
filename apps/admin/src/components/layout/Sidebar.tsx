@@ -2,10 +2,10 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@gotaxi/ui";
 import {
   LayoutDashboard, Map, Users, Car, Route as RouteIcon, Package,
-  CreditCard, Star, Lock, Settings, CalendarCheck,
+  CreditCard, Star, Lock, Settings, CalendarCheck, Tag, MapPin, Building2, UserPlus,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/authStore";
-import { useAdminPendingColis } from "@/hooks/useAdmin";
+import { useAdminPendingColis, useAdminDemandesStats } from "@/hooks/useAdmin";
 import { UserProfileDropdown } from "./UserProfileDropdown";
 import type { UserRole } from "@/types/domain";
 
@@ -31,15 +31,19 @@ const sections: Array<{
     items: [
       { to: "/users", icon: Users, label: "Utilisateurs" },
       { to: "/chauffeurs", icon: Car, label: "Chauffeurs" },
+      { to: "/demandes", icon: UserPlus, label: "Demandes chauffeur", badgeKey: "demandesNouvelles" },
       { to: "/voyages", icon: RouteIcon, label: "Voyages" },
       { to: "/colis", icon: Package, label: "Colis", badgeKey: "colisPending" },
       { to: "/reservations", icon: CalendarCheck, label: "Réservations" },
+      { to: "/villes", icon: MapPin, label: "Villes" },
+      { to: "/gares", icon: Building2, label: "Gares" },
     ],
   },
   {
     title: "FINANCES",
     items: [
       { to: "/transactions", icon: CreditCard, label: "Transactions" },
+      { to: "/tarifs", icon: Tag, label: "Tarifs trajets" },
     ],
   },
   {
@@ -55,9 +59,11 @@ const sections: Array<{
 export function Sidebar() {
   const user = useAuthStore((s) => s.user);
   const { data: pendingColis } = useAdminPendingColis();
+  const { data: demandesStats } = useAdminDemandesStats();
 
   const badges: Record<string, number | undefined> = {
     colisPending: pendingColis?.length,
+    demandesNouvelles: demandesStats?.nouvelle,
   };
 
   return (

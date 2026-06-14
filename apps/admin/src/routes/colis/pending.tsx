@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { PendingCard } from "@/components/colis/PendingCard";
 import { Button, Spinner } from "@gotaxi/ui";
@@ -6,6 +6,7 @@ import { ArrowLeft, CheckCircle } from "lucide-react";
 import { useAdminPendingColis } from "@/hooks/useAdmin";
 
 export default function ColisPendingPage() {
+  const navigate = useNavigate();
   const { data, isLoading } = useAdminPendingColis();
   const pending = data ?? [];
 
@@ -34,7 +35,7 @@ export default function ColisPendingPage() {
       ) : (
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {pending.map((colis) => (
-            <PendingCard key={colis.id} colis={colis} />
+            <PendingCard key={colis.id} colis={colis} onViewDetail={() => navigate(`/colis/${colis.id}`)} />
           ))}
         </div>
       )}

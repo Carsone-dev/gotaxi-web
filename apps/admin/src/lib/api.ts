@@ -20,7 +20,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
+    if (error.response?.status === 401 && !original._retry && !original.url?.includes("/auth/login")) {
       original._retry = true;
       if (!isRefreshing) {
         isRefreshing = true;
@@ -51,6 +51,9 @@ export const post = <T>(url: string, data?: object) =>
 
 export const patch = <T>(url: string, data?: object) =>
   apiClient.patch<T>(url, data).then((r) => r.data);
+
+export const put = <T>(url: string, data?: object) =>
+  apiClient.put<T>(url, data).then((r) => r.data);
 
 export const del = <T>(url: string) =>
   apiClient.delete<T>(url).then((r) => r.data);

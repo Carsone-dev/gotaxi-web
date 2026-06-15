@@ -155,6 +155,13 @@ export const adminApi = {
   restaurerAvis: (avisId: string) =>
     post<{ message: string }>(`/admin/avis/${avisId}/restaurer`),
 
+  // ── Documents véhicule ──
+  validerDocsVehicule: (vehiculeId: string) =>
+    post<{ message: string }>(`/admin/vehicules/${vehiculeId}/valider-docs`),
+
+  rejeterDocsVehicule: (vehiculeId: string, raison?: string) =>
+    post<{ message: string }>(`/admin/vehicules/${vehiculeId}/rejeter-docs`, raison ? { raison } : undefined),
+
   // ── Payout Account ──
   getPayoutAccount: (chauffeurId: string) =>
     get<ComptePayoutRead>(`/admin/chauffeurs/${chauffeurId}/payout-account`),

@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Car, CheckCircle, XCircle, Star, Phone, Calendar,
   Wifi, WifiOff, MapPin, TrendingUp, Globe, Globe2, Banknote,
-  Users, Trash2, AlertTriangle, Award,
+  Users, Trash2, AlertTriangle, Award, FileText, ChevronDown, ChevronUp,
+  Eye, X, Download, ExternalLink, ShieldCheck, ShieldX,
 } from "lucide-react";
 import { Button, Spinner, Badge } from "@gotaxi/ui";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -24,6 +25,8 @@ import {
   useAdminPayoutAccount,
   useAdminUpsertPayoutAccount,
   useAdminDeletePayoutAccount,
+  useValiderDocsVehicule,
+  useRejeterDocsVehicule,
 } from "@/hooks/useAdmin";
 import type { PayoutOperateur } from "@/types/domain";
 import { formatDate, formatDateTime, formatCurrency, formatPhoneNumber, getInitials, getMediaUrl } from "@/lib/format";
@@ -280,7 +283,7 @@ export default function ChauffeurDetailPage() {
                   </h3>
                   <div className="space-y-3">
                     {chauffeur.vehicules.map((v) => (
-                      <div key={v.id}>
+                      <div key={v.id} className="space-y-2">
                         <div className="flex items-center gap-3 rounded-xl border border-border p-3">
                           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-surface">
                             <Car className="size-4 text-muted-foreground" />
@@ -317,6 +320,9 @@ export default function ChauffeurDetailPage() {
                             </button>
                           </div>
                         </div>
+
+                        {/* Documents véhicule */}
+                        <VehiculeDocsSection vehicule={v} />
 
                         {/* Confirmation suppression véhicule */}
                         {vehiculeToDelete === v.id && (
@@ -613,6 +619,241 @@ export default function ChauffeurDetailPage() {
           </div>
         </div>
       </div>
+    </>
+  );
+}
+
+// ── Section documents véhicule ────────────────────────────────────────────────
+
+function VehiculeDocsSection({ vehicule }: { vehicule: import("@/types/domain").VehiculeRead }) {
+  const [open, setOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<{ url: string; label: string } | null>(null);
+  const [showRejectForm, setShowRejectForm] = useState(false);
+  const [raison, setRaison] = useState("");
+
+  const valider = useValiderDocsVehicule();
+  const rejeter = useRejeterDocsVehicule();
+
+  const docs = [
+    { label: "Assurance",        url: vehicule.assurance_url,       expiration: vehicule.assurance_expiration },
+    { label: "Visite technique", url: vehicule.visite_technique_url, expiration: vehicule.visite_technique_expiration },
+    { label: "Titre",            url: vehicule.titre_url,            expiration: vehicule.titre_expiration },
+    { label: "Livret de bord",   url: vehicule.livret_bord_url,      expiration: null },
+  ];
+
+  const hasDocs = docs.some((d) => d.url);
+  const allMissing = !hasDocs;
+
+  const handleValider = async () => {
+    try {
+      await valider.mutateAsync(vehicule.id);
+      toast.success("Documents véhicule validés");
+    } catch {
+      toast.error("Erreur lors de la validation");
+    }
+  };
+
+  const handleRejeter = async () => {
+    try {
+      await rejeter.mutateAsync({ vehiculeId: vehicule.id, raison: raison.trim() || undefined });
+      toast.success("Documents rejetés");
+      setShowRejectForm(false);
+      setRaison("");
+    } catch {
+      toast.error("Erreur lors du rejet");
+    }
+  };
+
+  return (
+    <>
+      {/* Toggle */}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-border/40"
+      >
+        <span className="flex items-center gap-1.5">
+          <FileText className="size-3.5" />
+          Documents véhicule
+          {vehicule.docs_vehicule_valides ? (
+            <span className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success">
+              <ShieldCheck className="size-3" /> Validés
+            </span>
+          ) : hasDocs ? (
+            <span className="rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-bold text-warning-text">
+              En attente
+            </span>
+          ) : (
+            <span className="rounded-full bg-error/10 px-2 py-0.5 text-[10px] font-bold text-error">
+              Manquants
+            </span>
+          )}
+        </span>
+        {open ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+      </button>
+
+      {open && (
+        <div className="rounded-xl border border-border bg-surface/60 p-3 space-y-3">
+
+          {/* Date de validation */}
+          {vehicule.docs_vehicule_valides && vehicule.docs_vehicule_valides_le && (
+            <p className="text-xs text-success font-medium">
+              ✅ Validés le {formatDate(vehicule.docs_vehicule_valides_le)}
+            </p>
+          )}
+
+          {/* Grille des 4 documents */}
+          {allMissing ? (
+            <p className="text-center text-xs text-muted-foreground py-2">
+              Aucun document soumis
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {docs.map((doc) => {
+                const fullUrl = doc.url ? getMediaUrl(doc.url) : null;
+                return (
+                  <div key={doc.label} className="flex flex-col gap-1">
+                    <p className="truncate text-[10px] font-semibold text-muted-foreground">{doc.label}</p>
+                    {fullUrl ? (
+                      <button
+                        type="button"
+                        onClick={() => setLightbox({ url: fullUrl, label: doc.label })}
+                        className="group relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-border bg-white transition-colors hover:border-primary"
+                      >
+                        <img
+                          src={fullUrl}
+                          alt={doc.label}
+                          className="h-full w-full object-cover"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35">
+                          <Eye className="size-4 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                        </div>
+                      </button>
+                    ) : (
+                      <div className="flex aspect-[4/3] w-full items-center justify-center rounded-lg border border-dashed border-border bg-white">
+                        <FileText className="size-4 text-muted-foreground/30" />
+                      </div>
+                    )}
+                    {doc.expiration && (
+                      <p className="text-[10px] text-muted-foreground">
+                        Exp : {formatDate(doc.expiration)}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Actions de validation */}
+          {!vehicule.docs_vehicule_valides && hasDocs && (
+            <div className="border-t border-border pt-3 space-y-2">
+              {!showRejectForm ? (
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="flex-1"
+                    leftIcon={<ShieldCheck className="size-3.5" />}
+                    onClick={handleValider}
+                    loading={valider.isPending}
+                  >
+                    Valider les docs
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex-1 text-error hover:text-error"
+                    leftIcon={<ShieldX className="size-3.5" />}
+                    onClick={() => setShowRejectForm(true)}
+                  >
+                    Rejeter
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <textarea
+                    value={raison}
+                    onChange={(e) => setRaison(e.target.value)}
+                    placeholder="Motif du rejet (optionnel)…"
+                    rows={2}
+                    className="w-full resize-none rounded-lg border border-border bg-white p-2 text-xs outline-none focus:border-primary"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="flex-1"
+                      onClick={handleRejeter}
+                      loading={rejeter.isPending}
+                    >
+                      Confirmer le rejet
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => { setShowRejectForm(false); setRaison(""); }}
+                    >
+                      Annuler
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <div
+            className="relative flex max-h-[95vh] max-w-[95vw] flex-col gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-semibold text-white">{lightbox.label}</p>
+              <div className="flex gap-2">
+                <a
+                  href={lightbox.url}
+                  download
+                  className="flex size-8 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Download className="size-4 text-white" />
+                </a>
+                <a
+                  href={lightbox.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex size-8 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink className="size-4 text-white" />
+                </a>
+                <button
+                  type="button"
+                  className="flex size-8 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                  onClick={() => setLightbox(null)}
+                >
+                  <X className="size-4 text-white" />
+                </button>
+              </div>
+            </div>
+            <img
+              src={lightbox.url}
+              alt={lightbox.label}
+              className="max-h-[85vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }

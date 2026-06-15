@@ -321,6 +321,27 @@ export const useDeleteVehicule = () => {
   });
 };
 
+export const useValiderDocsVehicule = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (vehiculeId: string) => adminApi.validerDocsVehicule(vehiculeId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "chauffeurs"] });
+    },
+  });
+};
+
+export const useRejeterDocsVehicule = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ vehiculeId, raison }: { vehiculeId: string; raison?: string }) =>
+      adminApi.rejeterDocsVehicule(vehiculeId, raison),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin", "chauffeurs"] });
+    },
+  });
+};
+
 export const useAdminAvis = (params?: { signale?: boolean; visible?: boolean; note?: number; page?: number; size?: number }) =>
   useQuery({
     queryKey: keys.admin.avis(params),

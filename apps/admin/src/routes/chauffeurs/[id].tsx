@@ -675,6 +675,11 @@ function VehiculeDocsSection({ vehicule }: { vehicule: import("@/types/domain").
         <span className="flex items-center gap-1.5">
           <FileText className="size-3.5" />
           Documents véhicule
+          {vehicule.photos_interieures?.length > 0 && (
+            <span className="rounded-full bg-surface border border-border px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+              📷 {vehicule.photos_interieures.length} intérieur{vehicule.photos_interieures.length > 1 ? "s" : ""}
+            </span>
+          )}
           {vehicule.docs_vehicule_valides ? (
             <span className="flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success">
               <ShieldCheck className="size-3" /> Validés
@@ -745,6 +750,34 @@ function VehiculeDocsSection({ vehicule }: { vehicule: import("@/types/domain").
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/* Photos intérieures */}
+          {vehicule.photos_interieures?.length > 0 && (
+            <div>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                Photos intérieures ({vehicule.photos_interieures.length})
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                {vehicule.photos_interieures.map((raw, i) => {
+                  const url = getMediaUrl(raw);
+                  if (!url) return null;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setLightbox({ url, label: `Intérieur ${i + 1}` })}
+                      className="group relative size-20 overflow-hidden rounded-lg border border-border bg-white transition-colors hover:border-primary shrink-0"
+                    >
+                      <img src={url} alt={`Intérieur ${i + 1}`} className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35">
+                        <Eye className="size-4 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
 

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import type { ColisStatut } from "@/types/domain";
 
 const STATUT_CONFIG: Record<ColisStatut, { label: string; variant: "success" | "info" | "warning" | "error" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning"  },
   EN_ATTENTE: { label: "En attente", variant: "warning"  },
   CONFIRME:   { label: "Confirmé",   variant: "info"     },
   EN_TRANSIT: { label: "En transit", variant: "info"     },
@@ -28,7 +29,7 @@ const TIMELINE: Array<{ statut: ColisStatut; label: string }> = [
 ];
 
 const STATUT_ORDER: Record<ColisStatut, number> = {
-  EN_ATTENTE: 0, CONFIRME: 1, EN_TRANSIT: 2, LIVRE: 3, ANNULE: -1,
+  EN_ATTENTE_PAIEMENT: -1, EN_ATTENTE: 0, CONFIRME: 1, EN_TRANSIT: 2, LIVRE: 3, ANNULE: -1,
 };
 
 const CATEGORIE_LABELS: Record<string, string> = {
@@ -163,7 +164,7 @@ export default function ColisDetailPage() {
               <InfoRow icon={<MapPin className="size-4" />}   label="Trajet"       value={`${colis.ville_depart} → ${colis.ville_arrivee}`} />
               <InfoRow icon={<User className="size-4" />}     label="Destinataire" value={colis.destinataire_nom} />
               <InfoRow icon={<Phone className="size-4" />}    label="Téléphone"    value={formatPhoneNumber(colis.destinataire_telephone)} />
-              <InfoRow icon={<Truck className="size-4" />}    label="Paiement"     value={colis.modalite_paiement === "A_LA_CONFIRMATION" ? "À la confirmation" : "À la livraison"} />
+              <InfoRow icon={<Truck className="size-4" />}    label="Transport"    value="À régler directement avec le chauffeur" />
               <InfoRow icon={<Calendar className="size-4" />} label="Créé le"      value={formatDateTime(colis.created_at)} />
             </dl>
 
@@ -255,18 +256,23 @@ export default function ColisDetailPage() {
             </div>
           )}
 
-          {/* Prix */}
+          {/* Frais plateforme */}
           <div className="rounded-2xl border border-border bg-white p-4">
             <div className="flex items-center gap-2 text-muted-foreground mb-2">
               <Banknote className="size-4" />
-              <p className="text-xs font-bold uppercase tracking-wider">Prix</p>
+              <p className="text-xs font-bold uppercase tracking-wider">Frais plateforme</p>
             </div>
             <p className="text-2xl font-extrabold text-primary">
-              {colis.prix != null ? formatCurrency(colis.prix) : "Non fixé"}
+              {formatCurrency(colis.frais_plateforme)}
             </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              {colis.modalite_paiement === "A_LA_CONFIRMATION" ? "Payable à la confirmation" : "Payable à la livraison"}
+              {colis.statut === "EN_ATTENTE_PAIEMENT" ? "Paiement FedaPay en attente" : "Payé via FedaPay"}
             </p>
+            {colis.prix != null && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Transport : {formatCurrency(colis.prix)} à régler avec le chauffeur
+              </p>
+            )}
           </div>
 
           {/* Expéditeur */}

@@ -4,16 +4,20 @@ import { useMoMoStats } from "@/hooks/useAdmin";
 import type { TransactionOperateur } from "@/types/domain";
 
 const OPERATOR_LABELS: Record<TransactionOperateur, string> = {
+  FEDAPAY:      "FedaPay",
   MTN_MOMO:     "MTN MoMo",
   MOOV_MONEY:   "Moov Money",
   ORANGE_MONEY: "Orange Money",
+  CELTIS:       "Celtis",
   WALLET:       "Wallet",
 };
 
 const OPERATOR_COLORS: Record<TransactionOperateur, string> = {
+  FEDAPAY:      "#10B981",
   MTN_MOMO:     "#FFD700",
   MOOV_MONEY:   "#00B7E2",
   ORANGE_MONEY: "#FF6600",
+  CELTIS:       "#A855F7",
   WALLET:       "#009542",
 };
 

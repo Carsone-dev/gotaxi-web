@@ -44,6 +44,13 @@ export const useMoMoStats = () =>
     staleTime: 5 * 60_000,
   });
 
+export const useAdminBenefices = (period: "7d" | "30d" | "90d" = "30d") =>
+  useQuery({
+    queryKey: keys.admin.benefices(period),
+    queryFn: () => adminApi.benefices(period),
+    staleTime: 60_000,
+  });
+
 export const useAdminUsers = (params?: { page?: number; size?: number; statut?: string; role?: string; search?: string }) =>
   useQuery({
     queryKey: keys.admin.users(params),

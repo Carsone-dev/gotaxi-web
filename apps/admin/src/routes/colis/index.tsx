@@ -21,6 +21,7 @@ const STATUT_CONFIG: Record<ColisStatut, {
   cardText: string;
   cardBorder: string;
 }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning", icon: <Clock className="size-4" />, cardBg: "bg-warning-bg", cardText: "text-warning-text", cardBorder: "border-warning/30" },
   EN_ATTENTE: { label: "En attente", variant: "warning",  icon: <Clock className="size-4" />,        cardBg: "bg-warning-bg",    cardText: "text-warning-text",   cardBorder: "border-warning/30"  },
   CONFIRME:   { label: "Confirmé",   variant: "info",     icon: <CheckCircle className="size-4" />,  cardBg: "bg-info-bg",       cardText: "text-info-text",      cardBorder: "border-info/30"     },
   EN_TRANSIT: { label: "En transit", variant: "info",     icon: <Truck className="size-4" />,        cardBg: "bg-blue-50",       cardText: "text-blue-700",       cardBorder: "border-blue-200"    },

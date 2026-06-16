@@ -54,6 +54,7 @@ export const keys = {
     topRoutes: () => ["admin", "top-routes"] as const,
     activity: () => ["admin", "activity"] as const,
     momoStats: () => ["admin", "momo-stats"] as const,
+    benefices: (period: string) => ["admin", "benefices", period] as const,
     users: (params?: object) => ["admin", "users", params] as const,
     userDetail: (id: string) => ["admin", "users", id] as const,
     usersStats: () => ["admin", "users", "stats"] as const,

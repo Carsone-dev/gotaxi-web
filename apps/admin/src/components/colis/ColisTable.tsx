@@ -8,6 +8,7 @@ import { formatDate, formatCurrency, getMediaUrl } from "@/lib/format";
 import type { ColisRead, ColisStatut } from "@/types/domain";
 
 const statutConfig: Record<ColisStatut, { label: string; variant: "success" | "error" | "warning" | "info" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning" },
   EN_ATTENTE: { label: "En attente", variant: "warning" },
   CONFIRME: { label: "Confirmé", variant: "info" },
   EN_TRANSIT: { label: "En transit", variant: "purple" as "info" },

@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@gotaxi/ui";
 import {
   LayoutDashboard, Map, Users, Car, Route as RouteIcon, Package,
-  CreditCard, Star, Lock, Settings, CalendarCheck, Tag, MapPin, Building2, UserPlus,
+  CreditCard, Star, Lock, Settings, CalendarCheck, Tag, MapPin, Building2, UserPlus, Wallet,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/authStore";
 import { useAdminPendingColis, useAdminDemandesStats } from "@/hooks/useAdmin";
@@ -42,6 +42,7 @@ const sections: Array<{
   {
     title: "FINANCES",
     items: [
+      { to: "/benefices", icon: Wallet, label: "Bénéfices plateforme", requireRole: "SUPER_ADMIN" },
       { to: "/transactions", icon: CreditCard, label: "Transactions" },
       { to: "/tarifs", icon: Tag, label: "Tarifs trajets" },
     ],

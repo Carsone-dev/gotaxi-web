@@ -16,13 +16,20 @@ export type UserStatut = "ACTIF" | "SUSPENDU" | "EN_ATTENTE_KYC" | "SUPPRIME";
 export type VoyageStatut = "PUBLIE" | "COMPLET" | "EN_COURS" | "TERMINE" | "ANNULE";
 
 export type ReservationStatut =
+  | "EN_ATTENTE_PAIEMENT"
   | "EN_ATTENTE"
   | "CONFIRMEE"
   | "REFUSEE"
   | "ANNULEE"
   | "TERMINEE";
 
-export type ColisStatut = "EN_ATTENTE" | "CONFIRME" | "EN_TRANSIT" | "LIVRE" | "ANNULE";
+export type ColisStatut =
+  | "EN_ATTENTE_PAIEMENT"
+  | "EN_ATTENTE"
+  | "CONFIRME"
+  | "EN_TRANSIT"
+  | "LIVRE"
+  | "ANNULE";
 
 export type ColisCategorie =
   | "DOCUMENTS"
@@ -32,11 +39,13 @@ export type ColisCategorie =
   | "FRAGILE"
   | "AUTRE";
 
-export type ColisModalitePaiement = "A_LA_CONFIRMATION" | "A_LA_LIVRAISON";
-
 export type TypeVehicule = "BERLINE" | "SUV" | "MINIBUS" | "BUS" | "MOTO";
 
 export type TransactionType =
+  // Nouveaux types — frais de mise en relation plateforme
+  | "FRAIS_RESERVATION"
+  | "FRAIS_COLIS"
+  // Anciens types conservés pour l'historique
   | "RECHARGE"
   | "PAIEMENT_VOYAGE"
   | "PAIEMENT_COLIS"
@@ -44,7 +53,13 @@ export type TransactionType =
   | "REMBOURSEMENT"
   | "COMMISSION";
 export type TransactionStatut = "EN_ATTENTE" | "EN_COURS" | "REUSSI" | "ECHEC" | "ANNULE";
-export type TransactionOperateur = "MTN_MOMO" | "MOOV_MONEY" | "ORANGE_MONEY" | "WALLET";
+export type TransactionOperateur =
+  | "FEDAPAY"
+  | "MTN_MOMO"
+  | "MOOV_MONEY"
+  | "ORANGE_MONEY"
+  | "CELTIS"
+  | "WALLET";
 
 export interface TransactionStatutStat {
   statut: TransactionStatut;
@@ -333,8 +348,10 @@ export interface ReservationRead {
   client_id: string;
   nombre_places: number;
   prix_total: number;
+  frais_plateforme: number;
   statut: ReservationStatut;
   code_confirmation: string;
+  paiement_expire_a: string | null;
   created_at: string;
   voyage: VoyageEmbedded | null;
   client: UserPublic | null;
@@ -359,11 +376,12 @@ export interface Colis {
   fragile: boolean;
   destinataire_nom: string;
   destinataire_telephone: string;
-  prix: number;
-  modalite_paiement: ColisModalitePaiement;
+  prix: number | null;
+  frais_plateforme: number;
   statut: ColisStatut;
   code_suivi: string;
   photo_url: string | null;
+  paiement_expire_a: string | null;
   voyage: VoyageRead | null;
   created_at: string;
   updated_at: string;
@@ -379,7 +397,6 @@ export interface ColisCreate {
   fragile: boolean;
   destinataire_nom: string;
   destinataire_telephone: string;
-  modalite_paiement?: ColisModalitePaiement;
 }
 
 // ─── Wallet & Transactions ───────────────────────────────────────────────────
@@ -406,6 +423,8 @@ export interface TransactionRead {
   operateur: TransactionOperateur;
   montant: number;
   reference_externe: string | null;
+  reservation_id: string | null;
+  colis_id: string | null;
   created_at: string;
   user: TransactionUser | null;
 }
@@ -521,6 +540,25 @@ export interface MoMoStat {
   volume: number;
   count: number;
   pct: number;
+}
+
+// ─── Bénéfices plateforme ──────────────────────────────────────────────────
+
+export interface BeneficesEvolutionPoint {
+  date: string;
+  frais_reservation: number;
+  frais_colis: number;
+  total: number;
+}
+
+export interface BeneficesData {
+  total_frais_reservation: number;
+  total_frais_colis: number;
+  total_general: number;
+  nb_reservations_payees: number;
+  nb_colis_payees: number;
+  evolution: BeneficesEvolutionPoint[];
+  compte_collecte: string;
 }
 
 // ─── Tarifs ──────────────────────────────────────────────────────────────────

@@ -24,6 +24,7 @@ import type {
 type Tab = "infos" | "reservations" | "colis" | "transactions" | "avis";
 
 const RESA_STATUT: Record<ReservationStatut, { label: string; variant: "success" | "info" | "warning" | "error" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning" },
   EN_ATTENTE:  { label: "En attente", variant: "warning" },
   CONFIRMEE:   { label: "Confirmée",  variant: "success" },
   REFUSEE:     { label: "Refusée",    variant: "error"   },
@@ -32,6 +33,7 @@ const RESA_STATUT: Record<ReservationStatut, { label: string; variant: "success"
 };
 
 const COLIS_STATUT: Record<ColisStatut, { label: string; variant: "success" | "info" | "warning" | "error" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning" },
   EN_ATTENTE: { label: "En attente",  variant: "warning" },
   CONFIRME:   { label: "Confirmé",    variant: "info"    },
   EN_TRANSIT: { label: "En transit",  variant: "info"    },
@@ -48,9 +50,11 @@ const TX_STATUT: Record<TransactionStatut, { label: string; variant: "success" |
 };
 
 const OP_COLOR: Record<TransactionOperateur, string> = {
+  FEDAPAY:      "bg-emerald-500",
   MTN_MOMO:     "bg-yellow-400",
   MOOV_MONEY:   "bg-sky-400",
   ORANGE_MONEY: "bg-orange-400",
+  CELTIS:       "bg-purple-400",
   WALLET:       "bg-primary",
 };
 

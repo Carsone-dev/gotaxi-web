@@ -5,7 +5,7 @@ import type {
   AdminColisDetail, AvisRead, AdminAvisItem, PaginatedResponse, ReservationRead, TransactionRead,
   TransactionStats, VoyagesStats, ReservationsStats, AdminChauffeurItem, ChauffeurStats, UserStats,
   VoyageRead, VoyageCreate, ChauffeurRevenus, VilleRead, GareRead, TarifTrajetRead,
-  ComptePayoutRead, PayoutOperateur,
+  ComptePayoutRead, PayoutOperateur, BeneficesData,
   DemandeChauffeur, DemandeChauffeurStats, TraiterDemandeResponse,
 } from "@/types/domain";
 
@@ -22,6 +22,9 @@ export const adminApi = {
   activityFeed: () => get<ActivityEvent[]>("/admin/dashboard/activity-feed"),
 
   momoStats: () => get<MoMoStat[]>("/admin/dashboard/momo-stats"),
+
+  benefices: (period: "7d" | "30d" | "90d" = "30d") =>
+    get<BeneficesData>("/admin/dashboard/benefices", { period }),
 
   users: (params?: { page?: number; size?: number; statut?: string; role?: string; search?: string }) =>
     get<PaginatedResponse<UserRead>>("/admin/users", params),

@@ -21,6 +21,7 @@ const ColisDetail = lazy(() => import("./colis/[id]"));
 const Reservations = lazy(() => import("./reservations/index"));
 const ReservationDetail = lazy(() => import("./reservations/[id]"));
 const Transactions = lazy(() => import("./transactions/index"));
+const Benefices = lazy(() => import("./benefices/index"));
 const Reviews = lazy(() => import("./reviews/index"));
 const Disputes = lazy(() => import("./reviews/disputes"));
 const Audit = lazy(() => import("./audit/index"));
@@ -56,6 +57,14 @@ const router = createBrowserRouter([
       { path: "reservations", element: <Reservations /> },
       { path: "reservations/:id", element: <ReservationDetail /> },
       { path: "transactions", element: <Transactions /> },
+      {
+        path: "benefices",
+        element: (
+          <ProtectedRoute requireRole="SUPER_ADMIN">
+            <Benefices />
+          </ProtectedRoute>
+        ),
+      },
       { path: "reviews", element: <Reviews /> },
       { path: "reviews/disputes", element: <Disputes /> },
       {

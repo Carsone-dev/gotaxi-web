@@ -17,6 +17,8 @@ export const STATUT_CONFIG: Record<TransactionStatut, { label: string; variant: 
 };
 
 export const TYPE_LABELS: Record<TransactionType, string> = {
+  FRAIS_RESERVATION: "Frais réservation",
+  FRAIS_COLIS:        "Frais colis",
   RECHARGE:        "Recharge",
   PAIEMENT_VOYAGE: "Paiement voyage",
   PAIEMENT_COLIS:  "Paiement colis",
@@ -29,9 +31,11 @@ export const TYPE_LABELS: Record<TransactionType, string> = {
 const CREDIT_TYPES = new Set<TransactionType>(["RECHARGE", "REVERSEMENT", "REMBOURSEMENT"]);
 
 export const OPERATOR_CONFIG: Record<TransactionOperateur, { label: string; dot: string }> = {
+  FEDAPAY:     { label: "FedaPay",      dot: "bg-emerald-500" },
   MTN_MOMO:    { label: "MTN MoMo",     dot: "bg-yellow-400" },
   MOOV_MONEY:  { label: "Moov Money",   dot: "bg-sky-400"    },
   ORANGE_MONEY:{ label: "Orange Money", dot: "bg-orange-400" },
+  CELTIS:      { label: "Celtis",       dot: "bg-purple-400" },
   WALLET:      { label: "Wallet",       dot: "bg-primary"    },
 };
 

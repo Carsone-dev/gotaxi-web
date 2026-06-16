@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import type { ReservationStatut, VoyageStatut } from "@/types/domain";
 
 const STATUT_CONFIG: Record<ReservationStatut, { label: string; variant: "success" | "info" | "warning" | "error" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning" },
   EN_ATTENTE: { label: "En attente", variant: "warning" },
   CONFIRMEE:  { label: "Confirmée",  variant: "success" },
   REFUSEE:    { label: "Refusée",    variant: "error"   },
@@ -29,7 +30,7 @@ const VOYAGE_STATUT_CONFIG: Record<VoyageStatut, { label: string; variant: "succ
   ANNULE:   { label: "Annulé",   variant: "error"   },
 };
 
-const CANCELLABLE: ReservationStatut[] = ["EN_ATTENTE", "CONFIRMEE"];
+const CANCELLABLE: ReservationStatut[] = ["EN_ATTENTE_PAIEMENT", "EN_ATTENTE", "CONFIRMEE"];
 
 function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);

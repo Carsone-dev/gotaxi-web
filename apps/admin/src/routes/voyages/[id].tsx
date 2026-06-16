@@ -22,8 +22,10 @@ const STATUT_CONFIG: Record<VoyageStatut, { label: string; variant: "success" | 
 };
 
 const RESA_STATUT: Record<ReservationStatut, { label: string; variant: "success" | "info" | "warning" | "error" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning" },
   EN_ATTENTE: { label: "En attente",  variant: "warning" },
   CONFIRMEE:  { label: "Confirmée",   variant: "success" },
+  REFUSEE:    { label: "Refusée",     variant: "error"   },
   ANNULEE:    { label: "Annulée",     variant: "error"   },
   TERMINEE:   { label: "Terminée",    variant: "neutral" },
 };

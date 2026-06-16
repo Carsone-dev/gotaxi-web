@@ -22,17 +22,20 @@ const STATUT_PILLS: { value: TransactionStatut | ""; label: string }[] = [
 ];
 
 const TYPE_OPTIONS: { value: TransactionType | ""; label: string }[] = [
-  { value: "",                label: "Tous les types"    },
-  { value: "RECHARGE",        label: "Recharge"          },
-  { value: "PAIEMENT_VOYAGE", label: "Paiement voyage"   },
-  { value: "PAIEMENT_COLIS",  label: "Paiement colis"    },
-  { value: "REVERSEMENT",     label: "Reversement"       },
-  { value: "REMBOURSEMENT",   label: "Remboursement"     },
-  { value: "COMMISSION",      label: "Commission"        },
+  { value: "",                  label: "Tous les types"    },
+  { value: "FRAIS_RESERVATION", label: "Frais réservation" },
+  { value: "FRAIS_COLIS",       label: "Frais colis"       },
+  { value: "RECHARGE",          label: "Recharge"          },
+  { value: "PAIEMENT_VOYAGE",   label: "Paiement voyage"   },
+  { value: "PAIEMENT_COLIS",    label: "Paiement colis"    },
+  { value: "REVERSEMENT",       label: "Reversement"       },
+  { value: "REMBOURSEMENT",     label: "Remboursement"     },
+  { value: "COMMISSION",        label: "Commission"        },
 ];
 
 const OPERATEUR_OPTIONS: { value: TransactionOperateur | ""; label: string }[] = [
   { value: "",             label: "Tous les opérateurs" },
+  { value: "FEDAPAY",      label: "FedaPay"             },
   { value: "MTN_MOMO",     label: "MTN MoMo"            },
   { value: "MOOV_MONEY",   label: "Moov Money"          },
   { value: "ORANGE_MONEY", label: "Orange Money"        },

@@ -17,6 +17,7 @@ import type { ReservationRead, ReservationStatut } from "@/types/domain";
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const STATUT_CONFIG: Record<ReservationStatut, { label: string; variant: "success" | "info" | "warning" | "error" | "neutral" }> = {
+  EN_ATTENTE_PAIEMENT: { label: "Paiement en attente", variant: "warning" },
   EN_ATTENTE: { label: "En attente", variant: "warning" },
   CONFIRMEE:  { label: "Confirmée",  variant: "success" },
   REFUSEE:    { label: "Refusée",    variant: "error"   },
@@ -33,7 +34,7 @@ const STATUT_PILLS: { value: ReservationStatut | ""; label: string }[] = [
   { value: "REFUSEE",    label: "Refusées"    },
 ];
 
-const CANCELLABLE: ReservationStatut[] = ["EN_ATTENTE", "CONFIRMEE"];
+const CANCELLABLE: ReservationStatut[] = ["EN_ATTENTE_PAIEMENT", "EN_ATTENTE", "CONFIRMEE"];
 
 // ─── CopyCode ─────────────────────────────────────────────────────────────────
 

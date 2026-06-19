@@ -573,3 +573,21 @@ export const useRejeterDemande = () => {
     },
   });
 };
+
+// ── Suggestions de villes ───────────────────────────────────────────────────
+
+export const useAdminSuggestionVilles = (params?: { traitee?: boolean }) =>
+  useQuery({
+    queryKey: keys.admin.suggestionVilles(params),
+    queryFn: () => adminApi.suggestionVilles(params),
+    staleTime: 60_000,
+  });
+
+export const useUpdateSuggestionVille = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...payload }: { id: string; traitee?: boolean; notes_admin?: string | null }) =>
+      adminApi.updateSuggestionVille(id, payload),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "suggestions-villes"] }),
+  });
+};

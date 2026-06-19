@@ -1,3 +1,4 @@
+import type { SuggestionVille as SuggestionVilleAdmin } from "@/types/domain";
 import { get, post, patch, put, del } from "@/lib/api";
 import type {
   UserRead, ChauffeurRead, ColisRead, AdminOverview, DashboardKPIs, RevenueData, TopRoute,
@@ -210,6 +211,13 @@ export const adminApi = {
 
   rejeterDemande: (id: string, motif?: string) =>
     post<{ message: string }>(`/admin/demandes-chauffeur/${id}/rejeter`, { motif }),
+
+  // ── Suggestions de villes ──────────────────────────────────────────────────
+  suggestionVilles: (params?: { traitee?: boolean }) =>
+    get<SuggestionVilleAdmin[]>("/admin/suggestions-villes", params),
+
+  updateSuggestionVille: (id: string, payload: { traitee?: boolean; notes_admin?: string | null }) =>
+    patch<SuggestionVilleAdmin>(`/admin/suggestions-villes/${id}`, payload),
 };
 
 export interface AuditLog {

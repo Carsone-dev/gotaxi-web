@@ -87,5 +87,6 @@ export const keys = {
     chauffeurVoyages: (userId: string) => ["admin", "chauffeurs", userId, "voyages"] as const,
     chauffeurRevenus: (userId: string) => ["admin", "chauffeurs", userId, "revenus"] as const,
     payoutAccount: (chauffeurId: string) => ["admin", "chauffeurs", chauffeurId, "payout-account"] as const,
+    suggestionVilles: (params?: object) => ["admin", "suggestions-villes", params] as const,
   },
 } as const;

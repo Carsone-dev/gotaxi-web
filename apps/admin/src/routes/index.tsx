@@ -30,6 +30,7 @@ const Tarifs = lazy(() => import("./tarifs/index"));
 const Villes = lazy(() => import("./villes/index"));
 const Gares = lazy(() => import("./gares/index"));
 const Demandes = lazy(() => import("./demandes/index"));
+const SuggestionsVilles = lazy(() => import("./suggestions-villes/index"));
 
 const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
@@ -79,6 +80,7 @@ const router = createBrowserRouter([
       { path: "villes", element: <Villes /> },
       { path: "gares", element: <Gares /> },
       { path: "demandes", element: <Demandes /> },
+      { path: "suggestions-villes", element: <SuggestionsVilles /> },
       { path: "settings", element: <Settings /> },
     ],
   },

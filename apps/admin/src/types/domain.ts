@@ -669,3 +669,13 @@ export interface FleetSummary {
   inTrip: number;
   available: number;
 }
+
+export interface SuggestionVille {
+  id: string;
+  nom_demande: string;
+  nb_demandes: number;
+  traitee: boolean;
+  notes_admin: string | null;
+  created_at: string;
+  updated_at: string;
+}
